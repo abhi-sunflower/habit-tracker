@@ -1,0 +1,11 @@
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+    // Each signed-in user can only read/write their own habits.
+    // Since only one account will ever exist for this app, this
+    // effectively means "only you, while signed in, can touch your data."
+    match /users/{userId}/habits/{habitId} {
+      allow read, write: if request.auth != null && request.auth.uid == userId;
+    }
+  }
+}
